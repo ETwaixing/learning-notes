@@ -90,7 +90,7 @@
         
 * ENTRYPOINT
 
-        允许您配置将作为可执行文件运行的容器
+        允许您配置将作为可执行文件运行的容器  优先级高于CMD
         ENTRYPOINT ["executable", "param1", "param2"] （exec表格，首选）
         ENTRYPOINT command param1 param2 （shell形式）
         
@@ -128,7 +128,8 @@
         
 * HEALTHCHECK
 
-        该HEALTHCHECK指令告诉Docker如何测试一个容器来检查它是否仍在工作。即使服务器进程仍在运行，这样可以检测出一系列无限循环的Web服务器，无法处理新连接的情况
+        该HEALTHCHECK指令告诉Docker如何测试一个容器来检查它是否仍在工作。即使服务器进程仍在运行，这样可以检测出一系列无
+        限循环的Web服务器，无法处理新连接的情况
         HEALTHCHECK [OPTIONS] CMD command （通过在容器内运行命令检查容器的健康状况）
         HEALTHCHECK NONE （禁用从基本图像继承的任何healthcheck）
         

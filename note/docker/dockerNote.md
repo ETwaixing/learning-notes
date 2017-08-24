@@ -8,7 +8,11 @@
 
 * docker inspect [id|name|repository]   查看容器镜像的详细信息
 
+* docker -v 返回docker的版本信息。备注：执行这个命令不需要docker守护进程启动，但是其他docker命令基本上都需要docker守护进程已经启动
+
 * docker info/version  查看docker的设置信息以及版本信息
+
+* docker system prune  清理docker没有使用的data(所有停止中的容器、没有使用的网关、挂起的镜像以及构建的缓存)
 
 * docker镜像相关操作命令
 
@@ -69,6 +73,12 @@
         
         docker attach 连接到正在运行中的容器（退出容器终端后，容器运行停止）
         	--sig-proxy=false 可以确保退出时候不关闭容器
+        
+        docker cp [路径1] [路径2] 可以让主机与容器之间文件相互拷贝
+        主机容器路径  ID/NAME:容器路径
+        
+        docker rename [oldname] [newname] 容器重新命名
+        
         	
 * docker数据卷相关操作命令
 
