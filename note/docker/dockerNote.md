@@ -79,7 +79,8 @@
         
         docker rename [oldname] [newname] 容器重新命名
         
-        	
+        docker diff [CONTAINER] 查询容器内变换情况
+        
 * docker数据卷相关操作命令
 
         -v [主机url]:[容器主机url] 将主机的url挂载到容器上
