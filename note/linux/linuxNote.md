@@ -26,6 +26,115 @@
 
 * 随时随地可以在命令后面 --help 查看帮助
 
+* linux基本命令
+        
+    * 常用命令
+        
+            ls 查看目录中的文件
+                -l 显示文件和目录的详细信息
+                -a 显示所有文件（包括隐藏文件）
+            mkdir 创建新目录
+            cd 切换目录
+            touch 创建空文件
+            echo 打印指定的变量值
+            cat 查看文件的内容
+            cp 拷贝
+            mv 移动或者重命名
+            rm 删除文件
+                -r 递归删除，可删除目录及文件
+                -f 强制删除
+            find 在文件系统中搜索某文件
+            wc [textfile] 统计文本中行数、字数、字符数
+            grep [textfile] 在文本文件中查找某个字符串
+            rmdir 删除空目录
+            pwd 显示当前目录
+            ln 创建链接文件
+            clear 清除控制台命令信息
+            df 显示已经挂载的分区列表
+            du 查看文件和目录磁盘使用的空间情况
+                        
+    * 系统信息
+    
+            arch 显示机器的处理器架构
+            uname -m 显示机器的处理器架构
+            uname -r 显示正在使用的内核版本
+            cat /proc/cpuinfo 显示CPU info信息
+            cat /proc/meminfo 显示内存 info信息
+            cat /proc/version 显示内核的版本信息
+            cat /proc/net/dev 显示网络适配器及统计信息
+            cat /proc/mounts 显示已加载的文件系统
+            date 显示系统日期
+            cal 显示当前日历 
+                [year] 显示年份的日历信息
+            stat [filename] 显示指定文件的详细信息，比ls更详细
+            who 显示在线登陆用户
+            whoami 显示当前操作用户
+            hostname 显示主机名
+            top 动态显示当前耗费资源最多进程信息
+            ps 显示瞬间进程状态
+            ifconfig 查看网络情况
+            ping [url] 测试网络连通性
+            netstat 显示网络状态信息
+            kill [id] 杀死进程
+            
+    * 关机
+    
+            shutdown 关闭系统
+                -r 关机重启
+                -h 关机不重启
+                now 立刻关机
+            halt 关机
+            init 0 关闭系统
+            telinit 0 关闭系统
+            shutdown -h hours:minutes 按预定时间关闭系统
+            shutdown -c 取消按预定时间关闭系统
+            reboot 重启
+            logout 注销
+            
+    * 文件和目录
+    
+            pwd 显示工作路径
+            cd 进入个人的主目录
+                [path] 进入某个目录
+                .. 返回上一级目录
+                ../.. 返回上两级目录
+                ~[path] 模糊搜索进入某个路径
+            ls 查看目录中的文件
+                -F 查看目录中的文件
+                -l 显示文件和目录的详细资料
+                -a 显示所有文件（包括隐藏文件）
+            mkdir [directory]... 创建新目录，可以创建多个目录
+                -p [path] 创建一个目录树
+            rmdir [directory]... 删除目录，可以删除多个目录
+            rm -f [filename] 删除某个文件
+                -rf [directory]... 删除目录及该目录下的所有内容，可以删除多个
+            mv [param1] [param2] 重命名文件或者将文件从一个目录转移到另一个目录
+            cp [param1] [param2] 复制文件或者将目录下的所有文件复制到另一个目录
+            ln [filename] [link] 创建一个指向文件或目录的物理链接
+                -s [filename] [link] 创建一个指向文件或目录的软链接
+            touch [filename]  创建一个空文件
+                -t [ms] [filename|directory] 修改一个文件或目录的时间戳
+            find [path] [rules]根据规则在制定目录下查找文件
+    
+    * 磁盘空间
+    
+            df 显示已经挂载的分区列表
+                -h 以可读性更高的方式来显示列表
+            du [filename|directory]查看文件和目录磁盘使用的空间情况，可以查看单个文件或目录
+                -s 只显示总和大小
+                -h 以可读性更高的方式来显示列表
+
+    * 用户和群组
+            
+            groupadd [name] 创建一个新用户组
+            groupdel [name] 删除一个用户组
+            groupmod -n [new_name] [old_name] 重命名一个用户组
+            useradd [name] 创建一个新用户
+            userdel -r [name] 删除一个用户（-r 排除主目录）
+            password 修改密码
+                [username] 修改某个用户的密码（只允许root用户）    
+            
+
 * 安装软件
     
         不能连接互联网的情况（通过传递的软件包）
@@ -95,4 +204,17 @@
         
 * 压缩解压
 
-        待续...
+        gzip:
+        bzip2:
+        tar:    打包压缩
+            -c  归档文件
+            -x  压缩文件
+            -z  gzip压缩文件
+            -j  bzip2压缩文件
+            -v  显示压缩或解压缩过程v(view 视图)
+            -f  使用档名
+        例：
+        tar -cvf /home/abc.tar /home/abc              只打包，不压缩
+        tar -zcvf /home/abc.tar.gz /home/abc        打包，并用gzip压缩
+        tar -jcvf /home/abc.tar.bz2 /home/abc      打包，并用bzip2压缩
+        当然，如果想解压缩，就直接替换上面的命令  tar -cvf  / tar -zcvf  / tar -jcvf 中的“c” 换成“x” 就可以了。
