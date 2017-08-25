@@ -91,7 +91,28 @@
         	ls 查看数据卷列表
         	prune 删除没有被使用的数据卷
         	rm 删除指定数据卷
-        	
+
+* docker集群相关命令操作
+
+        docker swarm 集群操作
+            init 初始化集群，启用集群模式
+            join 加入集群节点或者管理者
+            join-token 管理join tokens
+            leave 离开集群
+            
+        docker node 节点操作
+            inspect 查看节点的详细信息
+            ls 查看集群中的节点列表
+            ps [id] 查看节点中运行的任务，不填默认为通用的节点
+            rm [id] 删除某个节点
+            
+        docker stack 堆栈操作
+            deploy 部署一个新的堆栈或者更新之前的堆栈
+            ls 查看堆栈列表
+            ps [id] 查看堆栈运行的任务
+            rm [id] 删除某个堆栈
+            services [id] 查看堆栈中服务列表
+
 * 其他
 
         待续...
