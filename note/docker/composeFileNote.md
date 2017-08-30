@@ -26,7 +26,7 @@
             #将端口80映射到主机web的端口80
             ports:
               - "80:80"
-            #指示web容器通过称为负载平衡网络共享端口
+            #指示web容器共享端口在一个成为webnet的负载均衡网络
             networks:
               - webnet
         #webnet使用默认设置（这是一个负载均衡的重叠网络）来定义网络
@@ -921,22 +921,271 @@
         restart: on-failure
         restart: unless-stopped
         
+* domainname，hostname，ipc，mac_address，privileged，read_only，shm_size，stdin_open，tty，user，working_dir
+
+        每一个都是单一的取值，类似于docker run的对应物
         
+        user: postgresql
+        working_dir: /code
+        domainname: foo.com
+        hostname: foo
+        ipc: host
+        mac_address: 02:42:ac:11:65:43
+        privileged: true
+        read_only: true
+        shm_size: 64M
+        stdin_open: true
+        tty: true
         
+* Specifying durations（指定持续时间）
         
+        一些配置选项，如interval和timeout子选项 healthcheck，接受一个持续时间为看起来像这样的格式的字符串：
         
+        2.5s
+        10s
+        1m30s
+        2h32m
+        5h34m56s
+        
+        支持的单位是us，ms，s，m和h。
+        
+* Volume configuration reference（数据卷配置参考）
 
+        这是一个双服务设置的示例，其中数据库的数据目录与另一个服务共享为卷，以便可以定期备份数据库的数据目录：
+        version: "3"
+        services:
+          db:
+            image: db
+            volumes:
+              - data-volume:/var/lib/db
+          backup:
+            image: backup-service
+            volumes:
+              - data-volume:/var/lib/backup/data
+        volumes:
+          data-volume:
+          
+        顶级volumes密钥下的条目可以为空，在这种情况下，它将使用引擎配置的默认驱动程序（在大多数情况下，这是 local驱动程
+        序）。或者，您可以使用以下键进行配置：
+        
+    * diver
+            
+            指定该卷使用哪个卷驱动程序。默认为Docker Engine配置为使用的任何驱动程序，这在大多数情况下是这样 local。如果
+            驱动程序不可用，引擎将在docker-compose up尝试创建卷时返回错误
+            
+             driver: foobar
+             
+    * driver_opts
+    
+            指定一个选项列表作为键值对，以传递给该卷的驱动程序。这些选项与驱动程序相关 - 有关详细信息，请参阅驱动程序文
+            档。可选的
+            
+            driver_opts:
+               foo: "bar"
+               baz: 1
 
+    * external
+    
+            如果设置为true，则指定此卷已在Compose之外创建。docker-compose up不会尝试创建它，如果不存在则会引发错误。
+            external不能与其他音量配置键（driver，driver_opts）结合使用。
+            在下面的示例中，[projectname]_dataCompose 不是尝试创建一个名为的卷，而是 会查找一个简单调用的卷，data并将其
+            挂载到db服务的容器中
+            
+            version: '2'
+            services:
+              db:
+                image: postgres
+                volumes:
+                  - data:/var/lib/postgresql/data
+            volumes:
+              data:
+                external: true
 
+            还可以在Compose文件中与用于引用卷的名称分开指定卷的名称
+            
+            volumes:
+              data:
+                external:
+                  name: actual-name-of-volume
+                  
+            注意事项：如果您使用docker stack deploy以群组模式启动应用程序 （而不是docker compose up），则将创建不存在的
+            外部卷。在群集模式下，当由服务定义时，会自动创建一个卷。由于服务任务在新节点上安排， 所以swarmkit会在本地节
+            点上创建卷。
 
+    * labels
+    
+            使用Docker标签将元数据添加到容器 。您可以使用数组或字典。
+            建议您使用反向DNS符号来防止标签与其他软件使用的标签相冲突
+            
+            labels:
+              com.example.description: "Database volume"
+              com.example.department: "IT/Ops"
+              com.example.label-with-empty-value: ""
+            
+            labels:
+              - "com.example.description=Database volume"
+              - "com.example.department=IT/Ops"
+              - "com.example.label-with-empty-value"
+              
+* Network configuration reference（网络配置参考）
 
+        顶级networks密钥允许您指定要创建的网络
 
+    * driver
+    
+            指定该网络应使用哪个驱动程序。
+            默认驱动程序取决于您如何配置Docker Engine，但在大多数情况下，它将bridge位于单个主机和overlaySwarm上。
+            如果驱动程序不可用，Docker Engine将返回一个错误
+            
+            driver: overlay
+            
+    * driver_opts
+    
+            指定一个选项列表作为键值对，传递给该网络的驱动程序。这些选项与驱动程序相关 - 有关详细信息，请参阅驱动程序文
+            档。可选的
+            
+            driver_opts:
+                foo: "bar"
+                baz: 1
+    * enable_ipv6
+    
+            在此网络上启用IPv6网络
+            
+    * ipam
+    
+            指定自定义IPAM配置。这是一个具有多个属性的对象，每个属性都是可选的：
+            driver：自定义IPAM驱动程序，而不是默认值。
+            config：具有零个或多个配置块的列表，每个包含以下任何密钥：
+            subnet：表示网段的CIDR格式的子网
+            一个完整的例子：
+            
+            ipam:
+              driver: default
+              config:
+                - subnet: 172.28.0.0/16
+                
+            注意事项：其他IPAM配置，例如gateway，现在仅适用于版本2
+            
+    * internal
+    
+            默认情况下，Docker还将桥接网络连接到它，以提供外部连接。如果要创建外部隔离的重叠网络，可以将此选项设置为true
+            
+    * labels
+    
+            使用Docker标签将元数据添加到容器 。您可以使用数组或字典
+            建议您使用反向DNS符号来防止标签与其他软件使用的标签相冲突
+            
+            labels:
+              com.example.description: "Financial transaction network"
+              com.example.department: "Finance"
+              com.example.label-with-empty-value: ""
+            
+            labels:
+              - "com.example.description=Financial transaction network"
+              - "com.example.department=Finance"
+              - "com.example.label-with-empty-value"
+              
+    * external
+    
+            如果设置为true，则指定在Compose外创建了此网络。docker-compose up不会尝试创建它，如果不存在则会引发错误。
+            external可以不与其它网络配置键（结合使用driver，driver_opts，ipam，internal）。
+            在下面的例子中，proxy是通往外界的门户。[projectname]_outsideCompose 不是试图创建一个叫做“网络”的网络，而是
+            会寻找一个简单地调用outside并将proxy 服务的容器连接到的现有网络
+            
+            version: '2'
+            services:
+              proxy:
+                build: ./proxy
+                networks:
+                  - outside
+                  - default
+              app:
+                build: ./app
+                networks:
+                  - default
+            networks:
+              outside:
+                external: true
+                
+            您还可以在Compose文件中与用于引用网络的名称分开指定网络的名称
+            
+            networks:
+              outside:
+                external:
+                  name: actual-name-of-network
+                  
+* configs configuration reference（config配置参考）
 
+        顶层configs声明定义或引用 可以授予此堆栈中服务的配置。的配置的源是file或external。
+        file：使用指定路径的文件内容创建配置。
+        external：如果设置为true，则指定此配置已创建。Docker不会尝试创建它，如果不存在， config not found则会发生错误。
+        在这个例子中，my_first_config将被创建（ <stack_name>_my_first_config)当堆栈被部署时，并且my_second_config已经存
+        在于Docker中
+        
+        configs:
+          my_first_config:
+            file: ./config_data
+          my_second_config:
+            external: true
+            
+        外部配置的另一个变体是Docker中的配置名称与服务中存在的名称不同。以下示例修改前一个使用所调用的外部配置 redis_config
+        
+        configs:
+          my_first_config:
+            file: ./config_data
+          my_second_config:
+            external:
+              name: redis_config
+              
+        仍然需要授予对堆栈中每个服务的configs的访问权限
+        
+* secrets configuration reference（secrets配置参考）
 
+        顶级secrets声明定义或引用 可以授予此堆栈中服务的secrets。secrets的来源是file或者external。
+        file：使用指定路径的文件内容创建秘密。
+        external：如果设置为true，则指定此密钥已创建。Docker不会尝试创建它，如果不存在， secret not found则会发生错误。
+        在这个例子中，my_first_secret将被创建（ <stack_name>_my_first_secret)当堆栈被部署时，并且my_second_secret已经存
+        在于Docker中
+        
+        secrets:
+          my_first_secret:
+            file: ./secret_data
+          my_second_secret:
+            external: true
+            
+        外部secrets的另一种变体是Docker中的秘密名称与服务中存在的名称不同。以下示例修改前一个使用所调用的外部机密 redis_secret
+        
+        secrets:
+          my_first_secret:
+            file: ./secret_data
+          my_second_secret:
+            external:
+              name: redis_secret
+              
+        仍然需要授予对堆栈中每个服务的secrets的访问权限
+              
+* Variable substitution（变量代替）
 
-
-
-
-
-
-
+        您的配置选项可以包含环境变量。Compose使用docker-compose运行的shell环境中的变量值。例如，假设shell包含POSTGRES_VERSION=9.3
+        并提供此配置：
+        
+        db:
+          image: "postgres:${POSTGRES_VERSION}"
+        
+        当您运行docker-compose up此配置，撰写寻找的 POSTGRES_VERSION环境变量的外壳和替换其价值。在这个例子中，撰写解析image
+        到postgres:9.3运行配置之前。
+        如果环境变量未设置，Compose替换为空字符串。在上面的示例中，如果POSTGRES_VERSION未设置，则该image选项的值为postgres:。
+        您可以使用Compose自动寻找的.env文件为环境变量设置默认值 。在shell环境中设置的值将覆盖.env文件中设置的值。
+        支持两者$VARIABLE和${VARIABLE}语法。另外，当使用2.1文件格式时，可以使用典型的shell语法提供内联默认值：
+        ${VARIABLE:-default}在环境中没有设置或者为空时，默认为default。
+        ${VARIABLE-default}只有在环境中没有设置时，默认为default。
+        ${VARIABLE/foo/bar}不支持其他扩展的shell样式功能，例如。
+        $$当您的配置需要一个文字美元符号时，您可以使用（双美元符号）。这也可以防止Compose内插值，所以$$ 可以引用您不想通
+        过Compose处理的环境变量。
+        
+        web:
+          build: .
+          command: "$$VAR_NOT_INTERPOLATED_BY_COMPOSE"
+          
+        果您忘记并使用单个美元符号（$），Compose会将该值解释为环境变量，并会警告：
+        未设置VAR_NOT_INTERPOLATED_BY_COMPOSE。代替一个空字符串。
