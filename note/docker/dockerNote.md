@@ -92,7 +92,9 @@
         	prune 删除没有被使用的数据卷
         	rm 删除指定数据卷
 
-* docker集群相关命令操作
+## docker三剑客（）
+
+* docker集群相关命令操作---docker swarm
 
         docker swarm 集群操作
             init 初始化集群，启用集群模式
@@ -113,6 +115,73 @@
             rm [id] 删除某个堆栈
             services [id] 查看堆栈中服务列表
 
-* 其他
+* docker本地环境模拟以及虚拟机的设置---docker-machine
+
+        docker-machine create [name] 利用docker-machine对本地环境进行虚拟机的创建及其环境的虚拟化
+            -d [driver] 驱动设置（win10系统为Hyper-V）
+            --hyperv-virtual-switch [switch name] 设置要选择的虚拟交换机
+        注意事项：在win10下创建虚拟机时，需要以管理员的身份运行cmd再进行命令的执行
+        
+        docker-machine ssh [machine name] [command] 通过ssh连接到某个vm，并且执行输入的命令（命令需要用引号包含）
+        注意事项：不输入命令可以直接连接到虚拟机终端，输入exit将退出终端
+        
+        docker-machine ls 查看所设置的虚拟机列表以及相关信息
+        
+        docker-machine env [machine name] 查看某个虚拟机的环境信息
+        
+        docker-machine ip [machine name] 查看虚拟机对外的ip
+        
+        docker-machine kill [machine name] 杀掉一个虚拟机进程
+        
+        docker-machine restart [machine name] 重启一个虚拟机
+        
+        docker-machine rm [machine name] 删除一个虚拟机
+        
+        docker-machine scp [machine name]:[path] [machine name]:[path] 在两个虚拟机之间相互拷贝文件数据（也可以从本地
+        向虚拟机拷贝文件）
+        注意事项：本地环境拷贝数据时候，如果问window环境由于文件类型的不同需要介入其他的工具执行该命令（例如git bash）
+        
+        docker-machine start [machine name] 启动一个虚拟机
+        
+        docker-machine status [machine name] 查看一个虚拟机状态
+        
+        docker-machine stop [machine name] 停止一个虚拟机
+        
+* docker服务相关设置---docker-compose
+        
+        docker-compose build [service name] 创建或重新创建服务所使用的镜像
+        
+        docker-compose kill [service name] 通过向容器发送SIGKILL信号强行停止服务
+        
+        docker-compose logs [service name] 展示服务的日志
+        
+        docker-compose pause [service name] 暂停服务
+        
+        docker-compose unpause [service name] 恢复服务
+        
+        docker-compose port [service name] [port] 查看服务的端口被映射到了主机的哪个端口
+        
+        docker-compose ps 用于显示当前项目下的的容器
+            -a 显示本机上所有的容器
+        注意事项：执行此命令必须cd到项目的根目录，否则会发生错误。
+        
+        docker-compose pull [service name] 拉去服务依赖的镜像
+        
+        docker-compose restart [service name] 重启某个服务的所有容器
+        
+        docker-compose rm [service name] 删除停止的容器
+            -f 强制删除
+            -v 删除容器相关的数据卷
+            
+        docker-compose run [service name] 新建一个容器，配置等同于service
+        
+        docker-compose scale [service name=number]... 指定某一个服务启动的容器个数
+        注意事项：当容器有到主机的端口映射时，因为所有容器都指向一个宿主机的端口，所以只能启动一个容器，其他都会失败
+        
+        docker-compose start [service name] 运行某个服务的所有容器
+        
+        docker-compose stop [service name] 停止某个服务的所有容器
+        
+## 其他
 
         待续...

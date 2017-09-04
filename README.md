@@ -40,5 +40,6 @@ ___
 |5|waixing|2017-8-28|添加question目录文件|无|
 |6|waixing|2017-8-29|添加docker-composeFileNote记录文件|无|
 |7|waixing|2017-8-30|修改docker-composeFileNote记录文件|修改完善|
+|8|waixing|2017-9-4|修改dockerNote记录文件|添加docker集群相关命令记录|
 
 ---
