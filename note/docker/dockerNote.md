@@ -92,7 +92,7 @@
         	prune 删除没有被使用的数据卷
         	rm 删除指定数据卷
 
-## docker三剑客（）
+## docker三剑客（machine compose swarm）
 
 * docker集群相关命令操作---docker swarm
 
